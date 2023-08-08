@@ -53,6 +53,11 @@ export default function App() {
 	const blobUrlRef = useRef("");
 	const [preview, setPreview] = useState(false);
 	const [showDialog, setShowDialog] = useState(false);
+	const [textAreaContent, setTextAreaContent] =
+		useState(`Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+				Dolorum quod, nihil ex commodi dolores nisi? Odio nam ab
+				voluptate aspernatur iure consectetur asperiores, a earum
+				excepturi labore itaque pariatur aut?`);
 	const aspect = 16 / 9;
 	const inputRef = useRef(null);
 
@@ -114,6 +119,32 @@ export default function App() {
 		100,
 		[showCompletedCrop]
 	);
+
+	const selectionEvent = (e) => {
+		if (window.getSelection().toString().length === 0) return;
+		const selection = window.getSelection();
+		const range = selection.getRangeAt(0);
+		const newSpan = (
+			<span
+				style={{
+					textDecoration: "underline",
+				}}
+			>
+				{selection.toString()}
+			</span>
+		);
+		console.log(newSpan);
+		console.log(textAreaContent.split(selection.toString()));
+		const newTextAreaContent = `${
+			textAreaContent.split(selection.toString())[0]
+		} 
+			
+			${textAreaContent.split(selection.toString())[1]}`;
+
+		setTextAreaContent(newTextAreaContent);
+		console.log(range);
+		console.log(window.getSelection().toString());
+	};
 
 	const saveImg = () => {
 		setPreview(true);
@@ -226,6 +257,14 @@ export default function App() {
 					completeCrop={completedCrop}
 				/>
 			)}
+
+			<p
+				contentEditable
+				suppressContentEditableWarning
+				onSelect={selectionEvent}
+			>
+				{textAreaContent}
+			</p>
 		</div>
 	);
 }
