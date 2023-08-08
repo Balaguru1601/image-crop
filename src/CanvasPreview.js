@@ -5,8 +5,28 @@ export function canvasPreview(image, canvas, crop) {
 		throw new Error("No 2d context");
 	}
 
-	const scaleX = image.naturalWidth / image.width;
-	const scaleY = image.naturalHeight / image.height;
+	let height = 0;
+	let width = 0;
+
+	if (image.naturalWidth > 600 || image.naturalHeight > 600) {
+		const aspect = image.naturalWidth / image.naturalHeight;
+		if (image.naturalHeight > image.naturalWidth) {
+			height = 600;
+			width = aspect * height;
+		} else {
+			width = 600;
+			height = width / aspect;
+		}
+	}
+
+	const scaleX = image.naturalWidth / width;
+	// image.naturalWidth > 600
+	// 	? image.naturalWidth / 600
+	// 	: image.naturalWidth / image.width;
+	const scaleY = image.naturalHeight / height;
+	// image.naturalHeight > 600
+	// 	? image.naturalHeight / 600
+	// 	: image.naturalHeight / image.height;
 	// devicePixelRatio slightly increases sharpness on retina devices
 	// at the expense of slightly slower render times and needing to
 	// size the image back down if you want to download/upload and be

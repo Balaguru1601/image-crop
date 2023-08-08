@@ -131,10 +131,12 @@ export default function App() {
 						}}
 						onComplete={(c) => {
 							setCompletedCrop(c);
-							console.log("completed");
 						}}
 						aspect={aspect}
-						className="crop"
+						style={{
+							maxHeight: "600px",
+							maxWidth: "600px",
+						}}
 					>
 						<img
 							ref={imgRef}
@@ -146,6 +148,8 @@ export default function App() {
 									? imgRef.current.naturalWidth /
 									  imgRef.current.naturalHeight
 									: "",
+								maxHeight: "600px",
+								maxWidth: "600px",
 							}}
 						/>
 					</ReactCrop>

@@ -14,8 +14,10 @@ const Card = (props) => {
 				style={{
 					border: "1px solid black",
 					objectFit: "contain",
+					width: completeCrop.width,
+					height: completeCrop.height,
 					maxWidth: "100%",
-					aspectRatio: props.cropWidth / props.cropHeight,
+					maxHeight: "100%",
 				}}
 			/>
 		</div>
