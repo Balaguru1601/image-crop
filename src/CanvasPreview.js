@@ -1,4 +1,4 @@
-export async function canvasPreview(image, canvas, crop) {
+export function canvasPreview(image, canvas, crop) {
 	const ctx = canvas.getContext("2d");
 
 	if (!ctx) {
