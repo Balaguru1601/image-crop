@@ -5,7 +5,15 @@ const Tooltip = (props) => {
 	return (
 		<div className={classes.tooltip}>
 			{props.children}
-			<span className={classes.content}>{props.content}</span>
+			<span
+				className={classes.content}
+				style={{
+					visibility: props.visible ? "visible" : "hidden",
+					...props.style,
+				}}
+			>
+				{props.content}
+			</span>
 		</div>
 	);
 };

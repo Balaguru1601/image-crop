@@ -11,6 +11,8 @@ import "./App.css";
 import "react-image-crop/dist/ReactCrop.css";
 import Preview from "./Preview";
 import Card from "./Card";
+import Tooltip from "./Components/Tooltip";
+import Editor from "./Components/Editor";
 
 // This is to demonstate how to make and center a % aspect crop
 // which is a bit trickier so we use some helper functions.
@@ -53,11 +55,16 @@ export default function App() {
 	const blobUrlRef = useRef("");
 	const [preview, setPreview] = useState(false);
 	const [showDialog, setShowDialog] = useState(false);
-	const [textAreaContent, setTextAreaContent] =
-		useState(`Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-				Dolorum quod, nihil ex commodi dolores nisi? Odio nam ab
-				voluptate aspernatur iure consectetur asperiores, a earum
-				excepturi labore itaque pariatur aut?`);
+	const [textAreaContent, setTextAreaContent] = useState(
+		`
+			Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorum
+			quod, nihil ex commodi dolores nisi? Odio nam ab voluptate
+			aspernatur iure consectetur asperiores, a earum excepturi labore
+			itaque pariatur aut?
+		`
+	);
+	const [showTooltip, setShowTooltip] = useState(false);
+	const [tooltipStyle, setTooltipStyle] = useState({});
 	const aspect = 16 / 9;
 	const inputRef = useRef(null);
 
@@ -121,9 +128,16 @@ export default function App() {
 	);
 
 	const selectionEvent = (e) => {
-		if (window.getSelection().toString().length === 0) return;
+		e.stopPropagation();
+		if (window.getSelection().toString().trim().length === 0) {
+			setShowTooltip(false);
+			return;
+		}
 		const selection = window.getSelection();
-		const range = selection.getRangeAt(0);
+		const range = selection.getRangeAt(0).getClientRects()[0];
+		// console.log(selection.getRangeAt(0).getClientRects());
+		// console.log(selection.getRangeAt(0).getClientRects()[0]);
+		const outerRect = e.target.getBoundingClientRect();
 		const newSpan = (
 			<span
 				style={{
@@ -133,17 +147,22 @@ export default function App() {
 				{selection.toString()}
 			</span>
 		);
-		console.log(newSpan);
-		console.log(textAreaContent.split(selection.toString()));
+
+		console.log(textAreaContent.type);
+
 		const newTextAreaContent = `${
 			textAreaContent.split(selection.toString())[0]
-		} 
+		}
 			
 			${textAreaContent.split(selection.toString())[1]}`;
 
-		setTextAreaContent(newTextAreaContent);
-		console.log(range);
-		console.log(window.getSelection().toString());
+		// setTextAreaContent(newTextAreaContent);
+		const output = [];
+		setTooltipStyle({
+			left: range.left,
+			top: range.top - outerRect.top,
+		});
+		setShowTooltip(true);
 	};
 
 	const saveImg = () => {
@@ -258,13 +277,21 @@ export default function App() {
 				/>
 			)}
 
-			<p
-				contentEditable
-				suppressContentEditableWarning
-				onSelect={selectionEvent}
+			{/* <Tooltip
+				visible={showTooltip}
+				content={"tool tool toolt ollot tot"}
+				style={tooltipStyle}
 			>
-				{textAreaContent}
-			</p>
+				<p
+					contentEditable
+					suppressContentEditableWarning
+					onSelect={selectionEvent}
+					onBlur={() => setShowTooltip(false)}
+				>
+					{textAreaContent}
+				</p>
+			</Tooltip> */}
+			<Editor />
 		</div>
 	);
 }
